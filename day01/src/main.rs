@@ -1,4 +1,5 @@
-use std::{collections::HashMap, fs};
+use shared::load_file_lines;
+use std::collections::HashMap;
 
 fn main() {
     let result1 = puzzle1();
@@ -44,15 +45,12 @@ fn puzzle2() -> i32 {
 }
 
 fn get_lists() -> (Vec<i32>, Vec<i32>) {
-    let content =
-        fs::read_to_string("./input.txt").expect("Should have been able to read the file");
-
-    let lines_iter = content.split("\n");
+    let lines = load_file_lines("./input.txt");
 
     let mut left: Vec<i32> = Vec::new();
     let mut right: Vec<i32> = Vec::new();
 
-    for line in lines_iter {
+    for line in lines {
         let elements: Vec<&str> = line.split_whitespace().collect();
         if let Some(first) = elements.first() {
             left.push(first.parse().expect("Failed to parse first number"));
