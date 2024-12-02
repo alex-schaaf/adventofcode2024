@@ -69,12 +69,7 @@ fn check_monotony(gradients: Vec<i32>) -> bool {
 }
 
 fn get_gradient(report: Vec<i32>) -> Vec<i32> {
-    let mut gradient: Vec<i32> = Vec::new();
-    for idx in 1..report.len() {
-        let diff = report[idx - 1] - report[idx];
-        gradient.push(diff);
-    }
-    gradient
+    return report.windows(2).map(|w| w[0] - w[1]).collect();
 }
 
 fn get_reports(lines: Vec<String>) -> Vec<Vec<i32>> {
