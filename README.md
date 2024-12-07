@@ -8,5 +8,5 @@
 3. [Solution](https://github.com/alex-schaaf/adventofcode2024/blob/main/day03/src/main.rs). Simple regex parsing. This time I learned more about how to implement functions that return an `Option<T>`. Combined with the `?` shorthand for propagating errors, this makes for really nice happy-path coding without the verbosity that you see in Go code.
 4.
 5.
-6.
+6. [Solution](https://github.com/alex-schaaf/adventofcode2024/blob/main/day06/src/main.rs). Had fun over-engineering this by implementing a `Vec2d` struct, that represents a 2D vector as a 1D vector. First time I did OOP in Rust, so lots of things to learn here. Haven't started on Part 2 yet, though.
 7. [Solution](https://github.com/alex-schaaf/adventofcode2024/blob/main/day07/src/main.rs). I got a bit annoyed here with Rust, as creating the cartesian product of operators felt like an unneccessary hassle to get Rust to do what I wanted it to do. A stark contrast to Python's `itertools`. Also first time in my life I had to deal with an integer overflow, because I was using first `i32` for the calculations, but it required `i64`. Thankfully Rust just tells you that when trying to parse a stringified number.
