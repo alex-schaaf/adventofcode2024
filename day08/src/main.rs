@@ -8,9 +8,9 @@ fn main() {
 
     let result1 = puzzle1(&input);
     println!("Puzzle 1: {}", result1);
-    
-    // let result2 = puzzle2(&input);
-    // println!("Puzzle 2: {}", result2);
+
+    let result2 = puzzle2(&input);
+    println!("Puzzle 2: {}", result2);
 }
 
 #[derive(PartialEq, Eq, Hash, Clone, Copy, Debug)]
@@ -44,56 +44,98 @@ impl Point {
     }
 }
 
+fn puzzle2(input: &str) -> usize {
+    let (antennas, antennas_flat, antinodes, width, height) = parse(input);
+
+    let mut confirmed_antinodes: HashMap<Point, &char> = HashMap::new();
+
+    for (_, antenna_locs) in antennas.iter() {
+        for combinations in antenna_locs.iter().combinations(2) {
+            let p1 = combinations[0];
+            let p2 = combinations[1];
+            let (dx, dy) = p1.distance_vec(p2);
+
+            
+            let mut point = p1.clone();
+            let mut coords = vec![p1.clone(), p2.clone()];
+            loop {
+                let new_point = point.add_vec(dx, dy);
+                if new_point.in_bounds(width as i32, height as i32) {
+                    coords.push(new_point);
+                    // confirmed_antinodes.insert(new_point, &'#');
+                    point = new_point
+                } else {
+                    break;
+                }
+            }
+            point = p2.clone();
+            loop {
+                let new_point = point.subtract_vec(dx, dy);
+                if new_point.in_bounds(width as i32, height as i32) {
+                    coords.push(new_point);
+                    // confirmed_antinodes.insert(new_point, &'#');
+                    point = new_point
+                } else {
+                    break;
+                }
+            }
+            
+            for p in coords.iter() {
+                if !p.in_bounds(width as i32, height as i32) {
+                    continue;
+                }
+                if let Some(exists) = confirmed_antinodes.get(&p) {
+                    confirmed_antinodes.insert(*p, exists);
+                } else if let Some(exists) = antennas_flat.get(&p) {
+                    confirmed_antinodes.insert(*p, exists);
+                } else {
+                    confirmed_antinodes.insert(*p, &'#');
+                }
+            }
+        }
+    }
+
+    // for y in 0..height {
+    //     for x in 0..width {
+    //         let p = Point::new(x as i32, y as i32);
+    //         if let Some(_) = confirmed_antinodes.get(&p) {
+    //             print!("{}", '#')
+    //         } else if let Some(an) = antennas_flat.get(&p) {
+    //             print!("{}", an)
+    //         } else {
+    //             print!(".")
+    //         }
+    //     }
+    //     print!("\n")
+    // }
+
+    confirmed_antinodes.len()
+}
+
 fn puzzle1(input: &str) -> usize {
     let (antennas, antennas_flat, antinodes, width, height) = parse(input);
 
     let mut confirmed_antinodes: HashMap<Point, &char> = HashMap::new();
 
-    for (antenna_char, antenna_locs) in antennas.iter() {
+    for (_, antenna_locs) in antennas.iter() {
         for combinations in antenna_locs.iter().combinations(2) {
-            // println!("{:?}", combinations);
             let p1 = combinations[0];
             let p2 = combinations[1];
             let (dx, dy) = p1.distance_vec(p2);
-            // println!("{}, {}", dx, dy);
             let a = p2.subtract_vec(dx, dy);
             let b = p1.add_vec(dx, dy);
-            // println!("{:?}", p1);
-            // println!("{:?}", p2);
-            // println!("{:?}", a);
-            // println!("{:?}", b);
             for p in vec![a, b].iter() {
                 if p.in_bounds(width as i32, height as i32) {
                     if let Some(exists) = confirmed_antinodes.get(&p) {
-                        // println!("{exists} at {:?}", a);
                         confirmed_antinodes.insert(*p, exists);
                     } else if let Some(exists) = antennas_flat.get(&p) {
-                        // println!("{exists} at {:?}", a);
                         confirmed_antinodes.insert(*p, exists);
                     } else {
                         confirmed_antinodes.insert(*p, &'#');
                     }
                 }
-
-            }
-
-        }
-    }
-
-    // println!("{:?}", confirmed_antinodes);
-
-    for y in (0..height) {
-        for x in (0..width) {
-            let p = Point::new(x as i32, y as i32);
-            if let Some(an) = confirmed_antinodes.get(&p) {
-                print!("{}", '#')
-            } else if let Some(an) = antennas_flat.get(&p) {
-                print!("{}", an)
-            } else {
-                print!(".")
             }
         }
-        print!("\n")
     }
 
     confirmed_antinodes.len()
